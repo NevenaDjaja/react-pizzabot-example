@@ -1,26 +1,27 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import samples from './sample-data'
+import samples from '../sample-data'
 import InboxPane from './InboxPane'
-import ConversationPane from './ConversationPane'
 import StorePane from './StorePane'
+
+import '../main.css'
 
 const App = React.createClass({
   getInitialState() {
     return {
       "humans": {},
       "stores": {},
-      "selectedConversation": []
     }
   },
-  loadSampleData(e) {
-    this.setState(samples)
+
+  componentWillMount() {
+    if ('human' in this.props.params) {
+      this.loadSampleData()
+    }
   },
 
-  setSelectedConversation(name) {
-    this.setState({
-      selectedConversation: this.state.humans[name].conversations
-    })
+  loadSampleData() {
+    this.setState(samples)
   },
 
   render() {
@@ -32,13 +33,10 @@ const App = React.createClass({
           <div className="column">
             <InboxPane
               humans={this.state.humans}
-              selectedConversation={this.setSelectedConversation}
             />
           </div>
           <div className="column">
-            <ConversationPane
-              conversation={this.state.selectedConversation}
-            />
+            {this.props.children || "Select a conversation from the Inbox"}
           </div>
           <div className="column">
             <StorePane
@@ -51,6 +49,4 @@ const App = React.createClass({
   }
 })
 
-const el = document.getElementById('main')
-
-ReactDOM.render(<App />, el)
+export default App
